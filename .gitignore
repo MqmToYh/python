@@ -1,0 +1,10 @@
+/.git
+/.vscode
+!.gitignore
+*.pyc
+*.log
+*/data/*
+*/log.txt
+*/log*
+!*/data/Chara.gb
+*/sql/*
