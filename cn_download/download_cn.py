@@ -7,11 +7,12 @@ import urllib2 #url 请求
 import urllib 
 import re #正则
 import json #json
-from SqlUtil import Mysql
+from SqlUtil import Mysql,PostgreSql
 from cfg import PATH,SQL,URLS
 import LoggerUtil
 import urlparse
 import os
+import cgi
 import socket
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys  
@@ -111,7 +112,7 @@ def downloadHanyu(cn,html_path=PATH.html_path, url=URLS.cn_url):
             if len(dl_soup) > 1 and dl_soup[i].dt.get_text().find(info['pinyin']) == -1:
                 raise Exception(u'html解析与拼音无法对应')                
             else:
-                info['paraphrase'] = paraphrase.replace('\n','')
+                info['paraphrase'] = cgi.escape(paraphrase.replace('\n',''))
             pinyin_info.append(info)
             i +=1
         
@@ -170,7 +171,7 @@ def main(cn_file=PATH.cn_file):
     cns = []
     total = 0
     sucess_count = 0
-    mysql = Mysql()
+    postgre = PostgreSql()
     try:
         with open(cn_file,'r') as f:        
             for line in f:
@@ -179,14 +180,14 @@ def main(cn_file=PATH.cn_file):
                 total += 1                
                 cns.append(cn)
                 if total % 50 == 0:
-                    sucess_count +=batchDownloadHanyu(cns,mysql)
+                    sucess_count +=batchDownloadHanyu(cns,postgre)
                     cns = []
                     print u'一共处理汉字%d,成功处理汉字%d,处理失败的汉字%d' %(total,sucess_count,total-sucess_count)
         if cns:
-            sucess_count += batchDownloadHanyu(cns,mysql)
+            sucess_count += batchDownloadHanyu(cns,postgre)
             print u'一共处理汉字%d,成功处理汉字%d,处理失败的汉字%d' %(total,sucess_count,total-sucess_count)
     finally:
-        mysql.close()
+        postgre.close()
 def downloadZdic(cn,html_path=PATH.html_zdic_path):
     try:
         fileName = os.path.join(html_path,'%s_zdic' % cn)

@@ -36,11 +36,16 @@ class DBCFG:
     maxconnections=30
 class POSTGRE_CFG:
     '''postgreSql数据库配置'''
-    host = "localhost"
-    port = 24967
-    user="root"
-    passwd="pangu"
-    db="ycl_resource"
+    host ="192.168.26.157"
+    port = 5432
+    user ="iread"
+    passwd="iread"
+    db="iread"
+    #host = "localhost"
+    #port = 24967
+    #user="root"
+    #passwd="pangu"
+    #db="ycl_resource"
 
 
 

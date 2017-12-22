@@ -166,7 +166,7 @@ def testTime2():
         print u"222-sleep %fs,第%d次\n,quequ:%s" % (end - begin,count,quequ_.qsize())
         begin = end
         count += 1
-
+import cgi
 if __name__=="__main__": 
     
     #testFilter() #测试过滤器与map    
@@ -176,9 +176,13 @@ if __name__=="__main__":
     #testReSubFindall() #测试正则sub findall
     #testQueue()
     #testDic()
-    b = None
-    a = b.encode('raw_unicode_escape')
-    print a
+    #b = None
+    #a = b.encode('raw_unicode_escape')
+    #
+    
+    a = u'<dl><dd><p>古同 “1”。</p></dd></dl>'
+
+    print cgi.escape(a) 
     '''
     a = []
     for i in range(20):
