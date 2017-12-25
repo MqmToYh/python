@@ -3,8 +3,9 @@
 !.gitignore
 *.pyc
 *.log
+*/log_cn.txt
 */data/*
 */log.txt
-*/log*
+*/log.txt
 !*/data/Chara.gb
 */sql/*

@@ -79,7 +79,7 @@ def mysqlToPostGreSQL(course,tab_name=TAB_NAME):
 
 if __name__ == "__main__":    
     #课程
-    course =courses['math'][1]
+    course =courses['math'][2]
     #读取数据的表名
-    tab_name = 'k12_tiku_details_math_middle' 
+    tab_name = 'k12_tiku_details_math_high' 
     mysqlToPostGreSQL(course,tab_name)
