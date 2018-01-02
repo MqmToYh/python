@@ -56,4 +56,4 @@ def main(course,path_in=PATH.sql_path_in):
     putToDB(fileName)
 
 if __name__ == '__main__':
-    main(courses['math'][2])
+    main(courses['english'][2])

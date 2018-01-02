@@ -180,9 +180,13 @@ if __name__=="__main__":
     #a = b.encode('raw_unicode_escape')
     #
     
-    a = u'<dl><dd><p>古同 “1”。</p></dd></dl>'
+    a = u"'"
 
     print cgi.escape(a) 
+
+
+
+    print 'E:\ZuJuan\WCFUpload\Upload\Program Files\NSE\NSE-SH3\Template\Normal\\temp8.html&lt;u&gt;'.replace("\\","\\\\")
     '''
     a = []
     for i in range(20):

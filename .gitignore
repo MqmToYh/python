@@ -8,4 +8,4 @@
 */log.txt
 */log.txt
 !*/data/Chara.gb
-*/sql/*
+parse_tiku_old/sql/history.high.postgresql.sql

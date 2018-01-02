@@ -30,11 +30,17 @@ def parseQuestion(fileName,course):
         soup = BeautifulSoup(html,"lxml")
         scripts = soup.find_all(name ="script",attrs={'type':"text/javascript"}, text=re.compile("var\s*vo\s*=\s+(.+?)\s*;\s*with"))
         if not scripts: raise Exception(u"获取的网页状态不正常")
-        vo_str = re.findall(r"var\s*vo\s*=\s*({.+?})\s*,\s*error\s*=",scripts[0].get_text())[0]  
         try:
             vo = json.loads(vo_str)
         except Exception as ex:
-            vo = json.loads(vo_str.replace('\t','\\t'))   
+            vo = json.loads(vo_str.replace('\t','\\t')) 
+        vo_tm = {}
+        for key, value in vo.items():  
+            if isinstance(value,str):
+                vo_tm[key] = value.replace("'","\\'")
+            else:
+                vo_tm[key] = value
+        vo = vo_tm
         # 替换题干中的图片地址 暂未实现...
         # 替换答案选项中的图片地址 暂未实现...  
         # 替换分析中的图片地址   暂未实现... 
@@ -42,7 +48,8 @@ def parseQuestion(fileName,course):
         optionHtmlList = vo['optionHtmlList'] if 'optionHtmlList' in vo else ''
         if optionHtmlList :
             rs = re.findall(u'{"optionHtml":"[A|B|C|D|E|F|G]、(.+?)"}[,|\]]',optionHtmlList)
-            opts = json.dumps(rs,ensure_ascii=False)          
+            opts = json.dumps(rs,ensure_ascii=False)    
+            opts = opts.replace("'","\\'")   
         sql = u"insert into k12_tiku_details(OriginalID,Answer,Analysis,Difficulty,difficultyValue,Content,Options,zujuan_number,thirdkonwledgeid,secondknowledgeid,firstknowledgeid,courseId,subject_code,typeflag,typeid) \
         values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',%s,'%s','%s'); \n"
         #题目原始ID,答案,分析,难度,内容,选项,组卷次数,三级知识ID,二级知识点ID,一级知识点ID,类型,三级知识名称   
@@ -55,7 +62,7 @@ def parseQuestion(fileName,course):
         return sql % params        
     except Exception as e:
         logger.exception(u"生成题目SQL插入语句异常,题目与一级知识点id:%s,课程Id:%s-%s,错误信息:%s" %(os.path.basename(fileName),course['cid'],course['scid'],e.message))
- 
+        return ''
 def parseQuestions(filenames,course,sqlfile):
     try:
         file_num = len(filenames)

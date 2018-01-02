@@ -45,8 +45,11 @@ def mysqlToPostGreSQL(course,tab_name=TAB_NAME):
         for rs in mysql.getIteratorFastAll(sql,totalnum,isdic=True):  
             logger.info(u'加载数据autoId:%s',autoId)           
             for r in rs:
-                if r['typeid'] == '600038' or r['thirdkonwledgeid'] == '701085': 
-                    #初中历史选择题，但是有没有选项忽略处理  初中数学三级知识点701085题目有问题，所有忽略
+                if r['typeid'] == '600038' or r['typeid'] == '600112' or r['thirdkonwledgeid'] == '701085' or r['thirdkonwledgeid'] in ['709410','709417','709415','709422','709409','709412','709420','709407','709416','709405','709418','709419'] or r['thirdkonwledgeid'] in ['709479','709489','709491','709486','709495','709487','709480','709496','709488']: 
+                    #初中历史选择题，但是有没有选项忽略处理  初中数学三级知识点701085题目有问题，已被原网站舍弃，所以忽略
+                    #初中语文三级知识'709410','709417','709415','709422','709409','709412','709420','709407','709416','709405','709418','709419'已被原网站舍弃，所以忽略
+                    #高中语文三级知识'709479','709489','709491','709486','709495','709487','709480','709496','709488'已被原网站舍弃，所以忽略，
+                    #高中语文题目类型600112被忽略
                     ignore_num +=1
                     continue
                 autoId = r['autoId']   #用于标记处理数据的进度         
@@ -66,11 +69,11 @@ def mysqlToPostGreSQL(course,tab_name=TAB_NAME):
                 elif r['typeflag'] == '2':
                     answerlist.append( '√' if r['Answer'] == '1' else '×' )
                 else:
-                    method = r['Answer']
+                    method = r['Answer'].replace("'","''")
                     answerlist.append("")
                 insert_sql = "INSERT INTO t_ques(id,qid,answer,\"analyse\",cate,cate_name,content,method,options, points,subject,difficulty,paper_count) VALUES(%s,'%s','%s','%s',%s,'%s','%s','%s','%s','%s',%s,%s,%s);"  %(
-                r['OriginalID'],uuid.uuid1(),json.dumps(answerlist),r['Analysis'],qtype['code'],qtype['name'],r['Content'],
-                method, r['Options'] if r['Options'] else '[]',points,qtype['cid'],difficultyValue,r['zujuan_number'] )
+                r['OriginalID'],uuid.uuid1(),json.dumps(answerlist).replace("'","''"),r['Analysis'].replace("'","''"),qtype['code'],qtype['name'],r['Content'].replace("'","''"),
+                method, r['Options'].replace("'","''") if r['Options'] else '[]',points,qtype['cid'],difficultyValue,r['zujuan_number'] )
                 file.write(insert_sql + '\n')
                 #logger.info(insert_sql)
         mysql.close()
@@ -79,7 +82,7 @@ def mysqlToPostGreSQL(course,tab_name=TAB_NAME):
 
 if __name__ == "__main__":    
     #课程
-    course =courses['math'][2]
+    course =courses['english'][2]
     #读取数据的表名
-    tab_name = 'k12_tiku_details_math_high' 
+    tab_name = 'k12_tiku_details_english_high' 
     mysqlToPostGreSQL(course,tab_name)

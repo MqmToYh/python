@@ -24,7 +24,11 @@ def putToDB(fileName,rows = 1000):
                 count += 1
                 err_Sql.append(sql)
                 if batchSql: 
-                    batchSql = "%s , %s" %(batchSql, re.findall(u"VALUES(\(.+\));\s*\n$",sql)[0])                    
+                    try:
+                        batchSql = "%s , %s" %(batchSql, re.findall(u"VALUES(\(.+\));\s*\n$",sql)[0])
+                    except Exception as ex:
+                        logger.info(sql)
+                        raise ex                 
                 else:
                     batchSql = re.findall(u"^(.+);\s*\n$",sql)[0]                 
                 if count % rows == 0:
@@ -56,4 +60,4 @@ def main(course,path_in=PATH.sql_path_in):
     putToDB(fileName)
 
 if __name__ == '__main__':
-    main(courses['math'][2])
+    main(courses['english'][2])

@@ -57,7 +57,7 @@ update_sql_img=SQL.update_sql_img,insert_sql=SQL.insert_sql_convert,root_path=PA
                             fileName = os.path.join(root_path,url_path.path[1:])              
                             if os.path.exists(fileName):
                                 mtime = os.path.getmtime(fileName)                                
-                                if start_time < mtime and mtime < curr_time:
+                                if start_time <= mtime and mtime < curr_time:
                                     (temp,extension) = os.path.splitext(fileName)
                                     #新文件名称
                                     file_new_name= "%s%s" %(Utils.getStrMD5(url+"-mqm"),extension)
