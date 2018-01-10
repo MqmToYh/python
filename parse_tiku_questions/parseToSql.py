@@ -35,9 +35,9 @@ def parseQuestion(fileName,course):
         except Exception as ex:
             vo = json.loads(vo_str.replace('\t','\\t')) 
         vo_tm = {}
-        for key, value in vo.items():  
-            if isinstance(value,str):
-                vo_tm[key] = value.replace("'","\\'")
+        for key, value in vo.items(): 
+            if isinstance(value,(str,unicode)):
+                vo_tm[key] = value.replace("\\","\\\\").replace("'","\\'")
             else:
                 vo_tm[key] = value
         vo = vo_tm
@@ -46,17 +46,31 @@ def parseQuestion(fileName,course):
         # 替换分析中的图片地址   暂未实现... 
         opts = ""
         optionHtmlList = vo['optionHtmlList'] if 'optionHtmlList' in vo else ''
-        if optionHtmlList :
+        if optionHtmlList == "[]":
+            opts = optionHtmlList
+        elif optionHtmlList :
             rs = re.findall(u'{"optionHtml":"[A|B|C|D|E|F|G]、(.+?)"}[,|\]]',optionHtmlList)
-            opts = json.dumps(rs,ensure_ascii=False)    
+            #处理另一种格式的选项
+            if not rs: rs=re.findall(u'{"optionHtml":"&lt;p&gt;.+?&lt;/span&gt;(.+?)&lt;/p&gt;\s*"}[,|\]]',optionHtmlList)
+            if not rs: logger.info(vo_str)
+            rs_a = []
+            #处理选择中有table结束标签没有开始标签的题目
+            for opt in rs:
+                option= opt if opt.find('&lt;table/&gt;') > -1 else re.sub(u'&lt;/td&gt;\s*&lt;/tr&gt;\s*&lt;/table&gt;','',opt)
+                rs_a.append(option)
+            opts = json.dumps(rs_a,ensure_ascii=False)
             opts = opts.replace("'","\\'")   
         sql = u"insert into k12_tiku_details(OriginalID,Answer,Analysis,Difficulty,difficultyValue,Content,Options,zujuan_number,thirdkonwledgeid,secondknowledgeid,firstknowledgeid,courseId,subject_code,typeflag,typeid) \
         values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',%s,'%s','%s'); \n"
         #题目原始ID,答案,分析,难度,内容,选项,组卷次数,三级知识ID,二级知识点ID,一级知识点ID,类型,三级知识名称   
         #print opts.decode(utf-8)
+        #修复题干right样式没有引号
+        bodyHtml = re.sub(u'&lt;div\s+align=right&gt;(.*?)&lt;/div&gt;','',vo['bodyHtml'])
+        #修复多括号乱码
+        bodyHtml = re.sub(u'([^（])（ ））','\g<1>（）',bodyHtml)
         vo['difficulty'] =  vo['difficulty'] if 'difficulty' in vo else int(vo['difficultyValue']*3)
         params = (unicode(vo['id']),vo['answerHtml'],vo['anylysisHtml'],str(vo['difficulty']),str(vo['difficultyValue']),
-        vo['bodyHtml'],opts,str(vo['zujuanCount']),
+        bodyHtml,opts,str(vo['zujuanCount']),
         str(vo['thirdKnowledgeId']),str(vo['secondKnowledgeId']),str(vo['firstKnowledgeId']),
         str(vo['courseId']),course['cid'],str(vo['questionTypeFlag']),str(vo['questionTypeId']))
         return sql % params        

@@ -180,13 +180,38 @@ if __name__=="__main__":
     #a = b.encode('raw_unicode_escape')
     #
     
-    a = u"'"
+    #a = u"'"
 
-    print cgi.escape(a) 
+    #print cgi.escape(a) 
 
 
 
     print 'E:\ZuJuan\WCFUpload\Upload\Program Files\NSE\NSE-SH3\Template\Normal\\temp8.html&lt;u&gt;'.replace("\\","\\\\")
+  
+    s = u'[{"optionHtml":"&lt;p&gt;&lt;span class=&#39;option&#39;&gt;A、&lt;/span&gt;1、4、7&lt;/p&gt;"},{"optionHtml":"&lt;p&gt;&lt;span class=&#39;option&#39;&gt;B、&lt;/span&gt;2、5、8&lt;/p&gt;"},{"optionHtml":"&lt;p&gt;&lt;span class=&#39;option&#39;&gt;C、&lt;/span&gt;0、3、6、9&lt;/p&gt;"}]'
+    arr = json.loads(s)
+    arr2=[]
+    
+    for a in arr:
+        ss = re.sub(u'(&lt;p&gt;(.+?)&lt;/span&gt;).+(&lt;/p&gt;)','\g<3>',a['optionHtml'])
+        print ss
+    arr1 = re.findall(u'{"optionHtml":"&lt;p&gt;.+?&lt;/span&gt;(.+?)&lt;/p&gt;\s*"}[,|\]]',s)
+    print json.dumps(arr1,ensure_ascii=False)  
+    sssss = u'12（ ））'
+    with open('ta.txt','w') as f:
+        f.write(sssss)
+        f.write(re.sub(u'([^（])（ ））','\g<1>（）',sssss))
+    sss = u"&lt;span class&gt;&lt;/span&gt;1.25加0.35得&lt;br/&gt;&lt;div align=right&gt;[ ]&lt;/div&gt;"
+
+    print re.sub(u'&lt;div\s+align=right&gt;(.*?)&lt;/div&gt;','',sss)
+
+    asss = u"宪法具有最高的法律效力  &lt;/td&gt; &lt;/tr&gt;&lt;/table&gt;"
+    if asss.find('&lt;table/&gt;') > -1:
+        print asss
+    else:
+        print re.sub(u'&lt;/td&gt;\s*&lt;/tr&gt;\s*&lt;/table&gt;','',asss)
+       
+
     '''
     a = []
     for i in range(20):
