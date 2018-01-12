@@ -56,7 +56,8 @@ def parseQuestion(fileName,course):
             rs_a = []
             #处理选择中有table结束标签没有开始标签的题目
             for opt in rs:
-                option= opt if opt.find('&lt;table/&gt;') > -1 else re.sub(u'&lt;/td&gt;\s*&lt;/tr&gt;\s*&lt;/table&gt;','',opt)
+                pattern = u'&lt;/td&gt;\s*&lt;/tr&gt;\s*(&lt;/tbody&gt;)?\s*&lt;/table&gt;'
+                option= opt if opt.find('&lt;table/&gt;') > -1 else re.sub(pattern,'',opt)
                 rs_a.append(option)
             opts = json.dumps(rs_a,ensure_ascii=False)
             opts = opts.replace("'","\\'")   
@@ -121,12 +122,13 @@ def main():
     '''分析所有的题目'''
     lock = Lock()
     
-    pool = Pool(processes=3)
+    pool = Pool(processes=3,initializer=init,initargs=(lock,))
     for key, value in cfg.courses.items():
         for course in value:
             if course:
-                parseCourse(course,pool,lock)
+                parseCourse(course,pool)
     pool.close()
+    pool.join()
 
 if __name__ == "__main__":    
     if not os.path.exists(cfg.PATH.sql_path):

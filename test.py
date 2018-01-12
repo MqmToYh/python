@@ -206,10 +206,14 @@ if __name__=="__main__":
     print re.sub(u'&lt;div\s+align=right&gt;(.*?)&lt;/div&gt;','',sss)
 
     asss = u"宪法具有最高的法律效力  &lt;/td&gt; &lt;/tr&gt;&lt;/table&gt;"
+    atest = "54分米&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;img alt=&quot;&quot; src=&quot;http://tikucommon-zs.oss-cn-beijing.aliyuncs.com/tiku/source/upimg/pic2/upload/papers/20140610/201406102326199653013.png&quot; /&gt; "
     if asss.find('&lt;table/&gt;') > -1:
         print asss
     else:
-        print re.sub(u'&lt;/td&gt;\s*&lt;/tr&gt;\s*&lt;/table&gt;','',asss)
+        #print re.sub(u'&lt;/td&gt;\s*&lt;/tr&gt;\s*&lt;/table&gt;','',asss)
+        pattern = u'&lt;/td&gt;\s*&lt;/tr&gt;\s*(&lt;/tbody&gt;)?\s*&lt;/table&gt;'
+        print re.sub(pattern,'',atest)
+        print re.sub(pattern,'',asss)
        
 
     '''

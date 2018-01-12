@@ -26,7 +26,7 @@ courses ={
 }
 
 sql_temp ={
-    'section':'insert into tiku_section_relation(id,name,level,parentId,sortNo,vid,bid,cid) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)',
+    'section':'insert into tiku_section_relation(id,name,level,parentId,sortNo,vid,vname,bid,bname,cid) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',
     'knowled':'insert into tiku_knowled_relation(id,name,level,parentId,sortNo,cid) VALUES(%s,%s,%s,%s,%s,%s)',
     'questionType':'insert into tiku_question_type(id,name,cid,ocid) VALUES(%s,%s,%s,%s)',
 }

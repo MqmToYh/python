@@ -98,14 +98,16 @@ class ParseTiku:
         v_url_suffix = "&vid=%s&sort=0"        
         
         for dd in main_selector.find_all('div',{"id":"filter-version"})[0].find_all('dd'):
-            vid = dd["data-id"] #版本ID           
+            vid = dd["data-id"] #版本ID   
+            vname = dd.a.get_text()  #版本名称        
             v_selector = BeautifulSoup(html_parser.unescape(urllib.urlopen(course_url + v_url_suffix % vid).read() ),"lxml")
             for a in v_selector.find_all('div',{"id":"filter-book"})[0].find_all('a'):
                 bid = re.findall(r"bid=(.+?)&",a["href"])[0]
+                bname = a.get_text() #课本名称 
                 # 分析指定版本、指定课本的页面             
-                self.__parseSectionVBUrl__(course_url,bid,vid,course_dic['cid'])
+                self.__parseSectionVBUrl__(course_url,bid,bname,vid,vname,course_dic['cid'])
         
-    def __parseSectionVBUrl__(self,course_url,bid,vid,cid):
+    def __parseSectionVBUrl__(self,course_url,bid,bname,vid,vname,cid):
         '''
         按章节分析学科指定版本、指定课本的主页面
         '''
@@ -120,19 +122,19 @@ class ParseTiku:
         for li in b__selector.find_all('li',{"class":"tree-node tree-node-0 z-open"}):
             uid = re.findall(r"uid=(.+?)&",li.a["href"])[0]#单元ID
             uname = li.a["title"] #单元名称              
-            params.append((uid,uname,1,None,sortNo,vid,bid,cid))
+            params.append((uid,uname,1,None,sortNo,vid,vname,bid,bname,cid))
             sortNo += 1
             sortNo_c = 0
             for dl in li.find_all('dl'):
                 cptid = re.findall(r"cptid=(.+?)&", dl.dt.a["href"])[0] #子单元ID
                 cptname = dl.dt.a["title"] #子单元名称               
-                params.append((cptid,cptname,2,uid,sortNo_c,vid,bid,cid))
+                params.append((cptid,cptname,2,uid,sortNo_c,vid,vname,bid,bname,cid))
                 sortNo_c +=1
                 sortNo_k = 0
                 for dd in dl.find_all('dd',{"class":"tree-node-2"}):
                     kid = re.findall(r"kid=(.+?)&",dd.a["href"])[0] #知识点ID
                     kname = dd.a["title"] #知识点名称  
-                    params.append((kid,kname,3,cptid,sortNo_c,vid,bid,cid))
+                    params.append((kid,kname,3,cptid,sortNo_c,vid,vname,bid,bname,cid))
                     sortNo_k += 1
        
             if len(params) >1000 :
