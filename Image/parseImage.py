@@ -72,6 +72,12 @@ update_sql_img=SQL.update_sql_img,insert_sql=SQL.insert_sql_convert,root_path=PA
                                         shutil.copy2(fileName,file_new_name_all)
                                         Utils.modifyMD5(file_new_name_all)                                        
                                         insert_params.append((url,url_new))
+                                else:
+                                    #表示为之前处理过的图片
+                                    sql_url = "select new_jyeoo_url  t_jyeoo_image_convert where old_jyeoo_url = %s"
+                                    urlMap[url] = postgreSql.getOne(sql_url,(url))
+                                    if urlMap[url]:
+                                        logger.error(u'oldurl:%s,数据不存在'% url)
                             else:
                                 isDownloadFinish = False
 
