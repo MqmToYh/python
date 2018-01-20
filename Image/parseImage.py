@@ -56,8 +56,10 @@ update_sql_img=SQL.update_sql_img,insert_sql=SQL.insert_sql_convert,root_path=PA
                             url_path = urlparse.urlsplit(url)                            
                             fileName = os.path.join(root_path,url_path.path[1:])              
                             if os.path.exists(fileName):
-                                mtime = os.path.getmtime(fileName)                                
-                                if start_time <= mtime and mtime < curr_time:
+                                mtime = os.path.getmtime(fileName)  
+                                if mtime >= curr_time:  
+                                    isDownloadFinish = False                           
+                                elif start_time <= mtime:
                                     (temp,extension) = os.path.splitext(fileName)
                                     #新文件名称
                                     file_new_name= "%s%s" %(Utils.getStrMD5(url+"-mqm"),extension)
@@ -76,7 +78,8 @@ update_sql_img=SQL.update_sql_img,insert_sql=SQL.insert_sql_convert,root_path=PA
                         #下载完成就更新t_jyeoo_img_url 
                         if isDownloadFinish:
                             update_image_params.append((1,qid))      
-                            update_params.append((json.dumps(urlMap),qid))                       
+                            # 设置替换的图片url、更新原始数据表的状态为3（有图片、图片下载完成）
+                            update_params.append((json.dumps(urlMap),3,qid))                       
                                                                       
                     except Exception as ex:
                         logger.exception(u"处理qi=%s，校验题目的所有图片下载是否完成发生异常,异常信息：%s" % (qid,ex.message))                        

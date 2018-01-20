@@ -12,7 +12,7 @@ image_url = 'http://image.yuncelian.com/1/2017/12/'
 class SQL:
     select_sql_img ="SELECT id,qid,urls,status from t_jyeoo_img_url where status = 0 and id > %d order by id LIMIT 1000"
     update_sql_img = "UPDATE t_jyeoo_img_url set status = %s where qid = %s "
-    update_sql = "UPDATE t_jyeoo_ques set url_relation  = %s where qid = %s "
+    update_sql = "UPDATE t_jyeoo_ques set url_relation  = %s, status = %s where qid = %s "
     insert_sql_convert = 'INSERT INTO t_jyeoo_image_convert(old_jyeoo_url,new_jyeoo_url) values(%s,%s)'
 
 '''配置类'''
