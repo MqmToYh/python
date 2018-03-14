@@ -74,10 +74,10 @@ update_sql_img=SQL.update_sql_img,insert_sql=SQL.insert_sql_convert,root_path=PA
                                         insert_params.append((url,url_new))
                                 else:
                                     #表示为之前处理过的图片
-                                    sql_url = "select new_jyeoo_url  t_jyeoo_image_convert where old_jyeoo_url = %s"
-                                    urlMap[url] = postgreSql.getOne(sql_url,(url))
-                                    if urlMap[url]:
-                                        logger.error(u'oldurl:%s,数据不存在'% url)
+                                    sql_url = "select new_jyeoo_url from t_jyeoo_image_convert where old_jyeoo_url = %s"
+                                    urlMap[url] = postgreSql.getOne(sql_url,(url))[0]
+                                    #if urlMap[url]:
+                                    #    logger.error(u'oldurl:%s,数据不存在'% url)
                             else:
                                 isDownloadFinish = False
 
@@ -103,5 +103,12 @@ update_sql_img=SQL.update_sql_img,insert_sql=SQL.insert_sql_convert,root_path=PA
         postgreSql.close()
 
 if __name__ == '__main__':
-    main()
-    
+    #main()
+    try:
+        postgreSql = PostgreSql()
+        url = 'http://img.jyeoo.net/quiz/images/201704/121/de086667.png'
+        sql_url = "select new_jyeoo_url from t_jyeoo_image_convert where old_jyeoo_url = %s"
+        a = postgreSql.getOne(sql_url,(url,))
+        print a
+    finally:
+        postgreSql.close()

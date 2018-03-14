@@ -155,9 +155,8 @@ class PostgreSql(object):
 
     def getOne(self,sql,param=None):  
         '''执行查询获取第一条查询结果'''
-        count = self.__cur.execute(sql,param)  
-        if count:  
-            return  self.__cur.fetchone()[0] 
+        self.__cur.execute(sql,param)  
+        return self.__cur.fetchone()
         
     def getMany(self,sql,num,param=None):  
         """  执行查询，并取出num条结果 """       
