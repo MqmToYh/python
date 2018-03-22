@@ -56,7 +56,7 @@ update_sql_img=SQL.update_sql_img,insert_sql=SQL.insert_sql_convert,root_path=PA
                             url_path = urlparse.urlsplit(url)                            
                             fileName = os.path.join(root_path,url_path.path[1:])              
                             if os.path.exists(fileName):
-                                mtime = os.path.getmtime(fileName)  
+                                mtime = os.path.getmtime(fileName)                                
                                 if mtime >= curr_time:  
                                     isDownloadFinish = False                           
                                 elif start_time <= mtime:
@@ -75,7 +75,7 @@ update_sql_img=SQL.update_sql_img,insert_sql=SQL.insert_sql_convert,root_path=PA
                                 else:
                                     #表示为之前处理过的图片
                                     sql_url = "select new_jyeoo_url from t_jyeoo_image_convert where old_jyeoo_url = %s"
-                                    urlMap[url] = postgreSql.getOne(sql_url,(url))[0]
+                                    urlMap[url] = postgreSql.getOne(sql_url,(url,))[0]
                                     #if urlMap[url]:
                                     #    logger.error(u'oldurl:%s,数据不存在'% url)
                             else:
@@ -103,12 +103,4 @@ update_sql_img=SQL.update_sql_img,insert_sql=SQL.insert_sql_convert,root_path=PA
         postgreSql.close()
 
 if __name__ == '__main__':
-    #main()
-    try:
-        postgreSql = PostgreSql()
-        url = 'http://img.jyeoo.net/quiz/images/201704/121/de086667.png'
-        sql_url = "select new_jyeoo_url from t_jyeoo_image_convert where old_jyeoo_url = %s"
-        a = postgreSql.getOne(sql_url,(url,))
-        print a
-    finally:
-        postgreSql.close()
+    main()
